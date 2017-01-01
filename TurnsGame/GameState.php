@@ -11,7 +11,7 @@ final class GameState
         $this->gameEntity = $gameEntity;
     }
 
-    public function executeAction(PlayerAction $action)
+    public function executeAction(PlayerAction $action): ActionResponse
     {
         $this->validateGameStatus();
         $this->validatePlayerPermission($action->getPlayer());
@@ -23,10 +23,7 @@ final class GameState
             throw new GameStateException($e->getMessage());
         }
 
-        return [
-            'game' => $this->gameEntity,
-            'actionResponse' => $actionResponse,
-        ];
+        return $actionResponse;
     }
 
     public function getGame(): GameEntity
