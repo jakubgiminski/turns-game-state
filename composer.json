@@ -1,0 +1,17 @@
+{
+    "name": "jakubgiminski/turns-game-state",
+    "description": "Mechanism for managing state of a game, in which players take turns.",
+    "type": "project",
+    "require-dev": {
+        "phpunit/phpunit": "^5.7"
+    },
+    "authors": [
+        {
+            "name": "Jakub Giminski",
+            "email": "jakubgiminski@gmail.com"
+        }
+    ],
+    "require": {
+        "jakubgiminski/value-object": "dev-master"
+    }
+}
