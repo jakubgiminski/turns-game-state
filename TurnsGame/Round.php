@@ -2,6 +2,8 @@
 
 namespace TurnsGame;
 
-class Round extends ValueObject\IntegerValue
+use ValueObject\IntegerValue\IntegerValue;
+
+class Round extends IntegerValue
 {
 }

@@ -2,7 +2,9 @@
 
 namespace TurnsGame;
 
-class GameStatus extends ValueObject\StringValue
+use ValueObject\StringValue\StringValue;
+
+class GameStatus extends StringValue
 {
     protected $allowedValues = ['unstarted', 'ongoing', 'finished'];
 
