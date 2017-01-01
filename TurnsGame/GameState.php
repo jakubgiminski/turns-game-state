@@ -18,7 +18,8 @@ final class GameState
 
         try {
             $actionResponse = $action->execute();
-            $this->syncPlayer($actionResponse->getPlayer());
+            $player = $this->logPlayerAction($actionResponse->getPlayer());
+            $this->syncPlayer($player);
         } catch (\Exception $e) {
             throw new GameStateException($e->getMessage());
         }
@@ -73,5 +74,18 @@ final class GameState
             }
         }
         throw new \InvalidArgumentException('Player unknown to the game');
+    }
+
+    private function logPlayerAction(PlayerEntity $player): PlayerEntity
+    {
+        // Is it Player's first action in this round?
+        if ($player->getLastActionRound()->isLessThan($this->gameEntity->getRound())) {
+            return $player
+                ->setLastActionRound($this->gameEntity->getRound())
+                ->setNumActions(1);
+        }
+
+        $numActions = $player->getNumActions() + 1;
+        return $player->setNumActions($numActions);
     }
 }
