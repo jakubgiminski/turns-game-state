@@ -19,11 +19,11 @@ final class GameState
         try {
             $actionResponse = $action->execute();
             $player = $this->logPlayerAction($actionResponse->getPlayer());
-            $this->syncPlayer($player);
+            $this->updateGameWithPlayer($player);
+            $this->updateState();
         } catch (\Exception $e) {
             throw new GameStateException($e->getMessage());
         }
-
         return $actionResponse;
     }
 
@@ -76,7 +76,7 @@ final class GameState
         throw new \InvalidArgumentException('Player unknown to the game');
     }
 
-    private function logPlayerAction(PlayerEntity $player): PlayerEntity
+    private function updateGameWithPlayer(PlayerEntity $player): PlayerEntity
     {
         // Is it Player's first action in this round?
         if ($player->getLastActionRound()->isLessThan($this->gameEntity->getRound())) {
@@ -85,7 +85,31 @@ final class GameState
                 ->setNumActions(1);
         }
 
+        // todo update game entity
+
         $numActions = $player->getNumActions() + 1;
         return $player->setNumActions($numActions);
+    }
+
+    private function updateState()
+    {
+        foreach ($this->gameEntity->getPlayers() as $player) {
+            if (
+                $player->getLastActionRound()->isLessThan($this->gameEntity->getRound())
+                || $player->getNumActions() < $this->gameEntity->getNumActions()
+            ) {
+                return;
+            }
+        }
+
+        $currentRound = $this->gameEntity->getRound();
+
+        if ($this->gameEntity->getNumRounds() === $currentRound + 1) {
+            $this->gameEntity->setStatus(GameStatus::finished());
+            return;
+        }
+
+        $round = $this->gameEntity->getRound() + 1;
+        $this->gameEntity->setRound($round);
     }
 }
